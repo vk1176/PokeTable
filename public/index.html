@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+    <title>Pokedex Table</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="types.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  </head>
+  <body> 
+
+      <div id="container" ng-app="fullTable" ng-controller="main">
+        <div id=banner>
+          <label> Quick Search: 
+            <input type="text" ng-model="quickQuery">
+          </label>
+          <button ng-click="testathin()">Tester</button>
+        </div>
+
+        <table id="data">
+          <tr>
+            <th ng-click="sortBy('species')">#</th>
+            <th ng-click="sortBy('name')">Name</div></th>
+            <th ng-click="sortBy(['type1', 'type2'])">Type</th>
+            <th ng-click="sortBy(['ability1', 'ability2', 'hidden_ability'])">Ability</u></th>
+            <th ng-click="sortBy('hp')">HP</th>
+            <th ng-click="sortBy('atk')">Atk</th>
+            <th ng-click="sortBy('def')">Def</th>
+            <th ng-click="sortBy('spatk')">Sp.Atk</th>
+            <th ng-click="sortBy('spdef')">Sp.Def</th>
+            <th ng-click="sortBy('speed')">Speed</th>
+            <th ng-click="sortBy('bst')">BST</th>
+            <th ng-click="sortBy('weight')">Weight</th>
+          </tr>
+          <tr ng-repeat = "x in rows | orderBy:sortOrder:reversed | 
+                           filter: quickQuery |
+                           filter: {name:nombre} |
+                           filter: typefilter |
+                           filter: abilityFilter |
+                           filter: {hidden_ability: HA} |
+                           filter: numerics |
+                           filter: otherFilters |
+                           filter: moveFilter">          
+            <td ng-if="!shiny" class="image">
+              <a href="https://pokemondb.net/pokedex/{{x.species}}" target="_blank" rel="noopener noreferrer">
+                <img class="model" src={{x.sprite}}>
+              </a>
+            </td>
+            <td ng-if="shiny" class="image">
+              <a href="https://pokemondb.net/pokedex/{{x.species}}" target="_blank" rel="noopener noreferrer">
+                <img class="model" src={{x.shiny}}>
+              </a>
+            </td>
+            <td class="name">{{x.name}}</td>
+            <td class="types">
+              <p class="type {{x.type1}}">{{x.type1}}</p>
+              <p class="type {{x.type2}}">{{x.type2}}</p>
+            </td>
+            <td class="ability">
+              <p>{{x.ability1}}</p>
+              <p>{{x.ability2}}</p>
+              <br ng-if="x.hidden_ability!=null;">
+              <p><i>{{x.hidden_ability}}</i></p>
+            </td>
+            <td class="stat">{{x.hp}}</td>
+            <td class="stat">{{x.atk}}</td>
+            <td class="stat">{{x.def}}</td>
+            <td class="stat">{{x.spatk}}</td>
+            <td class="stat">{{x.spdef}}</td>
+            <td class="stat">{{x.speed}}</td>
+            <td class="stat">{{x.bst}}</td>
+            <td class="weights">{{x.weight/10}} kg</td>
+          </tr>
+        </table>
+
+        <div id="controls">
+          <input type="checkbox" ng-model="shiny"> Shiny
+          <table>
+            <tr>
+              <td>Name: </td>
+              <td><input type="text" ng-model="nombre"></td>
+            </tr>
+            <tr>
+              <td>Types: </td>
+              <td><select ng-model="t1" ng-options="x for x in types"></select></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><select ng-model="t2" ng-options="x for x in types"></select></td>
+            </tr>
+            <tr>
+              <td>Abilities: </td>
+              <td><input type=text ng-value="" ng-model="a1"></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="includeHA" checked>Include HA</td>
+              <td><input type=text ng-value="" ng-model="a2"></td>
+            </tr>
+            <tr>
+              <td>Hidden Ability: </td>
+              <td><input type=text ng-model="HA"></td>
+            </tr>
+          </table>
+
+          <table id="rangeTable">
+            <tr>
+              <td>Min</td>
+              <td></td>
+              <td>Max</td>
+            </tr>
+            <tr>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="hpmin"></td>
+              <td>HP</td>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="hpmax"></td>
+            </tr>
+            <tr>            
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="atkmin"></td>
+              <td>Atk</td>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="atkmax"></td>
+            </tr>
+            <tr>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="defmin"></td>
+              <td>Def</td>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="defmax"></td>
+            </tr>
+            <tr>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="spatkmin"></td>
+              <td>Sp.Atk</td>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="spatkmax"></td>
+            </tr>
+            <tr>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="spdefmin"></td>
+              <td>Sp.Def</td>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="spdefmax"></td>
+            </tr>
+            <tr>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="spdmin"></td>
+              <td>Speed</td>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="spdmax"></td>
+            </tr>
+            <tr>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="bstmin"></td>
+              <td>BST</td>
+              <td><input maxlength="3" class="range" type=text ng-value="" ng-model="bstmax"></td>
+            </tr>
+            <tr>
+              <td><input maxlength="5" class="range" type=text ng-value="" ng-model="weightmin"></td>
+              <td>Weight</td>
+              <td><input maxlength="5" class="range" type=text ng-value="" ng-model="weightmax"></td>  
+            </tr>
+          </table> 
+
+          <table id="moveset">
+            <tr>
+              <td>Move 1:</td>
+              <td><select ng-model="move1" ng-options="x.name for x in moves"></select></td>
+            </tr>
+            <tr>
+              <td>Move 2:</td>
+              <td><select ng-model="move2" ng-options="x.name for x in moves"></select></td>
+            </tr>
+            <tr>
+              <td>Move 3:</td>
+              <td><select ng-model="move3" ng-options="x.name for x in moves"></select></td>
+            </tr>
+            <tr>
+              <td>Move 4:</td>
+              <td><select ng-model="move4" ng-options="x.name for x in moves"></select></td>
+            </tr>             
+          </table> 
+
+          <table id="filters">
+            <tr>
+              <td>Gen</td>
+              <td>Forms</td>
+              <td>Stage</td>
+              <td>Class</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="g1" checked>1</td>
+              <td><input type="checkbox" ng-model="mega" checked>Mega</td>
+              <td><input type="checkbox" ng-model="firstStage" checked>First</td>
+              <td><input type="checkbox" ng-model="legendary" checked>Legendary</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="g2" checked>2</td>
+              <td><input type="checkbox" ng-model="alola" checked>Alolan</td>
+              <td><input type="checkbox" ng-model="middleStage" checked>Middle</td>
+              <td><input type="checkbox" ng-model="mythical" checked>Mythical</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="g3" checked>3</td>
+              <td><input type="checkbox" ng-model="galar" checked>Galarian</td>
+              <td><input type="checkbox" ng-model="finalStage" checked>Final</td>
+              <td><input type="checkbox" ng-model="pseudo" checked>Pseudo Legendary</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="g4" checked>4</td>
+              <td><input type="checkbox" ng-model="hisui" checked>Hisuian</td>
+              <td><input type="checkbox" ng-model="singleStage" checked>Single</td>
+              <td><input type="checkbox" ng-model="baby" checked>Baby</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="g5" checked>5</td>
+              <td><input type="checkbox" ng-model="other" checked>Other</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="g6" checked>6</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="g7" checked>7</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="g8" checked>8</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" ng-model="g9" checked>9</td>
+            </tr>
+          </table>
+
+        </div>
+
+      </div> 
+    
+      
+
+      
+    <script src="controllers.js"></script>
+  </body>
+</html>

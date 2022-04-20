@@ -1,0 +1,7 @@
+*** This is an ongoing project ***
+
+A simple yet somehow as of yet unimplemented table displaying all known Pokemon and a lot of relevant attributes of them. Usage is self explanatory; this is largely meant as a reference. 
+
+To use locally, simply download the repo and install the releveant node modules (Node.js is required, of course). If the save fails, the only required ones are Sqlite and Express. 
+
+Technically, Sqlite is not required, as the database used by the app already exists locally. If, however, something happens to it, one need only run database.js, which will create a local instance of the database. It will, however, take forever to complete for the first time. After this, run npm start (server.js is the entrypoint), and access port 5000 to run.
